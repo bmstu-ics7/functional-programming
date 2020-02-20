@@ -66,6 +66,15 @@
     )
 )
 
+(defun f1 (a1 a2 a3 a4)
+    (cons
+        (cons a1 (cons a2 Nil))
+        (cons
+            (cons a3 (cons a4 Nil)) Nil
+        )
+    )
+)
+
 (f1 1 2 3 4)
 
 ;;; Написать функцию (f arl ar2), возвращающую ((arl) (ar2)).
@@ -74,6 +83,15 @@
     (list
         (list a1)
         (list a2)
+    )
+)
+
+(defun f2 (a1 a2)
+    (cons
+        (cons a1 Nil)
+        (cons
+            (cons a2 Nil) Nil
+        )
     )
 )
 
@@ -86,6 +104,16 @@
         (list
             (list a)
         )
+    )
+)
+
+(defun f3 (a)
+    (cons
+        (cons
+            (cons
+              a Nil
+            ) Nil
+        ) Nil
     )
 )
 
