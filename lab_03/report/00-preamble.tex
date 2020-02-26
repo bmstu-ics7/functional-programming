@@ -41,7 +41,7 @@ citecolor=black, menucolor=black, filecolor=black,
 \usepackage{titlesec, blindtext, color}
 
 \titleformat
-{\chapter} % command
+{\section} % command
 {\bfseries\large} % format
 {}
 {-1cm}
@@ -49,12 +49,12 @@ citecolor=black, menucolor=black, filecolor=black,
     \centering
 }
 
-\titlespacing*{\chapter}{0cm}{0cm}{0cm}[0cm]
+\titlespacing*{\section}{0cm}{0cm}{0cm}[0cm]
 
 \lstset{
     numbers=left,
     texcl=true,
-    basicstyle=\normalsize\ttfamily,
+    basicstyle=\small\ttfamily,
     escapebegin=\begin{russian}\commentfont,
     escapeend=\end{russian},
     literate={Ö}{{\"O}}1
