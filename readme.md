@@ -101,7 +101,7 @@
 </details>
 
 <details>
-<summaru><b>Лабораторная работа 4</b></summaru>
+<summary><b>Лабораторная работа 4</b></summary>
 
 1. Дана функция `(defun mystery (x) (list (second x) (first x)))`.
 Какие результаты вычисления следующих выражений?
