@@ -1,4 +1,4 @@
-\section{ЗАДАНИЕ}
+\section{ЗАДАНИЕ 1}
 
 Дано два списка: первый список название стран, второй -- столиц.
 
@@ -124,3 +124,21 @@
 Также при использовании списка, состоящего из двухэлементных списков
 на каждую пару выделяется три списковых ячейки, а во втором случае --
 только две.
+
+\section{ЗАДАНИЕ 2}
+
+\begin{lstlisting}
+(defun new_how_alike (x y)
+    (if (or (= x y) (equal x y))
+        'the_same
+        (if (and (oddp x) (oddp y))
+            'both_odd
+            (if (and (evenp x) (evenp y))
+                'both_even
+                'difference))))
+
+(new_how_alike 2 4) ;;; both_even
+(new_how_alike 3 3) ;;; the_same
+(new_how_alike 3 5) ;;; both_odd
+(new_how_alike 4 5) ;;; difference
+\end{lstlisting}
