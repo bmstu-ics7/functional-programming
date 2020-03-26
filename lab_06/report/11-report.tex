@@ -1,4 +1,4 @@
-\section{ЗАДАНИЕ}
+\section{ЗАДАНИЕ 1}
 
 Дано два списка: первый список название стран, второй -- столиц.
 
@@ -19,50 +19,45 @@
 Создание списка, состоящего из двухэлементных списков.
 
 \begin{lstlisting}
-(defun list_merge_cc (countries cities)
-    (cond
-        ((null countries)  Nil)
-        ((null cities)     Nil)
-        (T (cons
-            (list (car countries) (car cities))
-            (list_merge_cc (cdr countries) (cdr cities))
-        ))
-    )
+(defun list_merge (countries cities)
+    (mapcar #'(lambda (ctr cty) (list ctr cty)) countries cities)
 )
 
-(setq list_merged_cc (list_merge_cc countries cities))
+(setq list_cc (list_merge countries cities))
 \end{lstlisting}
 
 Поиск страны по столице в списке из двухэлементных списков.
 
 \begin{lstlisting}
-(defun list_find_country (list_cc city)
-    (cond
-        ((null list_cc) Nil)
-        ((equal (cadar list_cc) city) (caar list_cc))
-        (T (list_find_country (cdr list_cc) city))
+(defun list_country (list_cc city)
+    (reduce #'(lambda (a b) (or a b))
+        (mapcar #'(lambda (el)
+                    (and (equal (cadr el) city) (car el))
+                ) list_cc
+        )
     )
 )
 
-(list_find_country list_merged_cc 'Moscow) ;;; Russia
-(list_find_country list_merged_cc  'Minsk) ;;; Belarus
-(list_find_country list_merged_cc 'Sidney) ;;; Nil
+(list_country list_cc 'London) ;;; GB
+(list_country list_cc 'NotExist) ;;; Nil
+(list_country list_cc 'Moscow) ;;; Russia
 \end{lstlisting}
 
 Поиск столицы по стране в списке из двухэлементных списков.
 
 \begin{lstlisting}
-(defun list_find_city (list_cc country)
-    (cond
-        ((null list_cc) Nil)
-        ((equal (caar list_cc) country) (cadar list_cc))
-        (T (list_find_city (cdr list_cc) country))
+(defun list_city (list_cc country)
+    (reduce #'(lambda (a b) (or a b))
+        (mapcar #'(lambda (el)
+                    (and (equal (car el) country) (cadr el))
+                ) list_cc
+        )
     )
 )
 
-(list_find_city list_merged_cc    'Russia) ;;; Moscow
-(list_find_city list_merged_cc   'Belarus) ;;; Minsk
-(list_find_city list_merged_cc 'Australia) ;;; Nil
+(list_city list_cc 'GB) ;;; London
+(list_city list_cc 'NotExist) ;;; Nil
+(list_city list_cc 'Russia) ;;; Moscow
 \end{lstlisting}
 
 \section{СПОСОБ 2: ТОЧЕЧНЫЕ ПАРЫ}
@@ -70,50 +65,45 @@
 Создание списка, состоящего из точечных пар.
 
 \begin{lstlisting}
-(defun cons_merge_cc (countries cities)
-    (cond
-        ((null countries)  Nil)
-        ((null cities)     Nil)
-        (T (cons
-            (cons (car countries) (car cities))
-            (cons_merge_cc (cdr countries) (cdr cities))
-        ))
-    )
+(defun cons_merge (countries cities)
+        (mapcar #'(lambda (ctr cty) (cons ctr cty)) countries cities)
 )
 
-(setq cons_merged_cc (cons_merge_cc countries cities))
+(setq cons_cc (cons_merge countries cities))
 \end{lstlisting}
 
 Поиск страны по столице в списке из двухэлементных списков.
 
 \begin{lstlisting}
-(defun cons_find_country (list_cc city)
-    (cond
-        ((null list_cc) Nil)
-        ((equal (cdar list_cc) city) (caar list_cc))
-        (T (cons_find_country (cdr list_cc) city))
+(defun cons_country (cons_cc city)
+    (reduce #'(lambda (a b) (or a b))
+        (mapcar #'(lambda (el)
+                    (and (equal (cdr el) city) (car el))
+                ) cons_cc
+        )
     )
 )
 
-(cons_find_country cons_merged_cc 'Moscow) ;;; Russia
-(cons_find_country cons_merged_cc  'Minsk) ;;; Belarus
-(cons_find_country cons_merged_cc 'Sidney) ;;; Nil
+(cons_country cons_cc 'London) ;;; GB
+(cons_country cons_cc 'NotExist) ;;; Nil
+(cons_country cons_cc 'Moscow) ;;; Russia
 \end{lstlisting}
 
 Поиск столицы по стране в списке из двухэлементных списков.
 
 \begin{lstlisting}
-(defun cons_find_city (list_cc country)
-    (cond
-        ((null list_cc) Nil)
-        ((equal (caar list_cc) country) (cdar list_cc))
-        (T (cons_find_city (cdr list_cc) country))
+(defun cons_city (cons_cc country)
+    (reduce #'(lambda (a b) (or a b))
+        (mapcar #'(lambda (el)
+                    (and (equal (car el) country) (cdr el))
+                ) cons_cc
+        )
     )
 )
 
-(cons_find_city cons_merged_cc    'Russia) ;;; Moscow
-(cons_find_city cons_merged_cc   'Belarus) ;;; Minsk
-(cons_find_city cons_merged_cc 'Australia) ;;; Nil
+(cons_city cons_cc 'GB) ;;; London
+(cons_city cons_cc 'NotExist) ;;; Nil
+(cons_city cons_cc 'Russia) ;;; Moscow
 \end{lstlisting}
 
 \section{ВЫВОДЫ}
@@ -124,3 +114,21 @@
 Также при использовании списка, состоящего из двухэлементных списков
 на каждую пару выделяется три списковых ячейки, а во втором случае --
 только две.
+
+\section{ЗАДАНИЕ 2}
+
+\begin{lstlisting}
+(defun new_how_alike (x y)
+    (if (or (= x y) (equal x y))
+        'the_same
+        (if (and (oddp x) (oddp y))
+            'both_odd
+            (if (and (evenp x) (evenp y))
+                'both_even
+                'difference))))
+
+(new_how_alike 2 4) ;;; both_even
+(new_how_alike 3 3) ;;; the_same
+(new_how_alike 3 5) ;;; both_odd
+(new_how_alike 4 5) ;;; difference
+\end{lstlisting}
