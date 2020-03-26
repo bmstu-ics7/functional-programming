@@ -1,0 +1,134 @@
+\section{ЗАДАНИЕ 1}
+
+Дано два списка: первый список название стран, второй -- столиц.
+
+\begin{itemize}
+    \item из двух списков создать список из двухэлементных списков
+    \item из двух списков создать список из точечных пар
+\end{itemize}
+
+По полученным спискам по стране найти столицу и наоборот.
+
+\begin{lstlisting}
+(setq countries '(Russia USA GB Belarus))
+(setq cities '(Moscow Washington London Minsk))
+\end{lstlisting}
+
+\section{СПОСОБ 1: СПИСКИ}
+
+Создание списка, состоящего из двухэлементных списков.
+
+\begin{lstlisting}
+(defun list_merge (countries cities)
+    (mapcar #'(lambda (ctr cty) (list ctr cty)) countries cities)
+)
+
+(setq list_cc (list_merge countries cities))
+\end{lstlisting}
+
+Поиск страны по столице в списке из двухэлементных списков.
+
+\begin{lstlisting}
+(defun list_country (list_cc city)
+    (reduce #'(lambda (a b) (or a b))
+        (mapcar #'(lambda (el)
+                    (and (equal (cadr el) city) (car el))
+                ) list_cc
+        )
+    )
+)
+
+(list_country list_cc 'London) ;;; GB
+(list_country list_cc 'NotExist) ;;; Nil
+(list_country list_cc 'Moscow) ;;; Russia
+\end{lstlisting}
+
+Поиск столицы по стране в списке из двухэлементных списков.
+
+\begin{lstlisting}
+(defun list_city (list_cc country)
+    (reduce #'(lambda (a b) (or a b))
+        (mapcar #'(lambda (el)
+                    (and (equal (car el) country) (cadr el))
+                ) list_cc
+        )
+    )
+)
+
+(list_city list_cc 'GB) ;;; London
+(list_city list_cc 'NotExist) ;;; Nil
+(list_city list_cc 'Russia) ;;; Moscow
+\end{lstlisting}
+
+\section{СПОСОБ 2: ТОЧЕЧНЫЕ ПАРЫ}
+
+Создание списка, состоящего из точечных пар.
+
+\begin{lstlisting}
+(defun cons_merge (countries cities)
+        (mapcar #'(lambda (ctr cty) (cons ctr cty)) countries cities)
+)
+
+(setq cons_cc (cons_merge countries cities))
+\end{lstlisting}
+
+Поиск страны по столице в списке из двухэлементных списков.
+
+\begin{lstlisting}
+(defun cons_country (cons_cc city)
+    (reduce #'(lambda (a b) (or a b))
+        (mapcar #'(lambda (el)
+                    (and (equal (cdr el) city) (car el))
+                ) cons_cc
+        )
+    )
+)
+
+(cons_country cons_cc 'London) ;;; GB
+(cons_country cons_cc 'NotExist) ;;; Nil
+(cons_country cons_cc 'Moscow) ;;; Russia
+\end{lstlisting}
+
+Поиск столицы по стране в списке из двухэлементных списков.
+
+\begin{lstlisting}
+(defun cons_city (cons_cc country)
+    (reduce #'(lambda (a b) (or a b))
+        (mapcar #'(lambda (el)
+                    (and (equal (car el) country) (cdr el))
+                ) cons_cc
+        )
+    )
+)
+
+(cons_city cons_cc 'GB) ;;; London
+(cons_city cons_cc 'NotExist) ;;; Nil
+(cons_city cons_cc 'Russia) ;;; Moscow
+\end{lstlisting}
+
+\section{ВЫВОДЫ}
+
+Удобней и эффективней использовать второй способ со списком,
+состоящим из точечных пар, так как для обращения к второму
+элементу пары необходимо использовать на одну функцию меньше.
+Также при использовании списка, состоящего из двухэлементных списков
+на каждую пару выделяется три списковых ячейки, а во втором случае --
+только две.
+
+\section{ЗАДАНИЕ 2}
+
+\begin{lstlisting}
+(defun new_how_alike (x y)
+    (if (or (= x y) (equal x y))
+        'the_same
+        (if (and (oddp x) (oddp y))
+            'both_odd
+            (if (and (evenp x) (evenp y))
+                'both_even
+                'difference))))
+
+(new_how_alike 2 4) ;;; both_even
+(new_how_alike 3 3) ;;; the_same
+(new_how_alike 3 5) ;;; both_odd
+(new_how_alike 4 5) ;;; difference
+\end{lstlisting}

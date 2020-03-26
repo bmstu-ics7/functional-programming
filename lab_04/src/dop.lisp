@@ -20,5 +20,8 @@
 )
 
 (square 0 0 0)
+(square 0 0 2)
 (square 0 1 -2)
+(square 5 2 -3)
+(square 1 2 1)
 (square 1 2 100)
