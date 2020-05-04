@@ -1,0 +1,157 @@
+\section{ЗАДАНИЕ 1}
+
+Написать функцию, которая по своему списку-аргументу lst определяет является ли
+он полиндромом (то есть равны ли lst и (reverse lst)).
+
+\begin{lstlisting}
+(defun is_palindrom (lst)
+    (equal lst (reverse lst))
+)
+
+(is_palindrom "abccba") ;;; T
+(is_palindrom "abcgba") ;;; Nil
+\end{lstlisting}
+
+\section{ЗАДАНИЕ 2}
+
+Напишите функцию swap-first-last, которая переставляет в списке-аргументе
+первый и последний элементы.
+
+\begin{lstlisting}
+(defun swap-first-last (lst)
+    (cond
+        ((null lst) Nil)
+        ((eql (length lst) 1) lst)
+        (T
+            (append
+                (last lst)
+                (mapcar #'(lambda (el _) el) (cdr lst) (cddr lst))
+                (list (first lst))
+            )
+        )
+    )
+)
+
+(swap-first-last ()) ;;; Nil
+(swap-first-last '(1)) ;;; (1)
+(swap-first-last '(1 2)) ;;; (2 1)
+(swap-first-last '(1 2 3 4 5)) ;;; (5 2 3 4 1)
+\end{lstlisting}
+
+\section{ЗАДАНИЕ 3}
+
+Напишите функцию swap-tow-elements, которая переставляет в списке-аргументе
+два указанных своими порядковыми номерами элемента в этом списке.
+
+\begin{lstlisting}
+(defun swap-two-elements (a b lst)
+    (cond
+        ((eql a b) lst)
+        ((> a b) (swap-two-elements b a lst))
+        (T
+            (append
+                (subseq lst 0 a)
+                (list (nth b lst))
+                (subseq lst (+ a 1) b)
+                (list (nth a lst))
+                (subseq lst (+ b 1))
+            )
+        )
+    )
+)
+
+(swap-two-elements '2 '4 '(1 2 3 4 5)) ;;; (1 2 5 4 3)
+(swap-two-elements '1 '4 '(1 2 3 4 5)) ;;; (1 5 3 4 2)
+(swap-two-elements '3 '2 '(1 2 3 4 5)) ;;; (1 2 4 3 5)
+\end{lstlisting}
+
+\section{ЗАДАНИЕ 4}
+
+Напишите две функции, swap-to-left и swap-to-right, которые производят круговую
+перестановку в списке-аргументе влево и вправо, соотвественно (на k позиций).
+
+\begin{lstlisting}
+(defun swap-to-left-one (lst)
+    (append (mapcar #'(lambda (el _) el) (cdr lst) lst) (list (car lst)))
+)
+
+(defun swap-to-left (lst k)
+    (cond
+        ((<= k 0) lst)
+        (T (swap-to-left (swap-to-left-one lst) (- k 1)))
+    )
+)
+
+(swap-to-left '(1 2 3 4 5) 2) ;;; (3 4 5 1 2)
+(swap-to-left '(1 2 3 4 5) 5) ;;; (1 2 3 4 5)
+
+(defun swap-to-right-one (lst)
+    (append (last lst) (mapcar #'(lambda (el _) el) lst (cdr lst)))
+)
+
+(defun swap-to-right (lst k)
+    (cond
+        ((<= k 0) lst)
+        (T (swap-to-right (swap-to-right-one lst) (- k 1)))
+    )
+)
+
+(swap-to-right '(1 2 3 4 5) 2) ;;; (4 5 1 2 3)
+(swap-to-right '(1 2 3 4 5) 5) ;;; (1 2 3 4 5)
+\end{lstlisting}
+
+\section{ЗАДАНИЕ 5}
+
+Напишите функцию, которая умножает на заданное число-аргумент
+все числа из заданного списка-аргумента, когда
+
+\begin{enumerate}
+    \item[а)] все элементы списка -- числа,
+    \item[б)] элементы списка -- любые объекты.
+\end{enumerate}
+
+\begin{lstlisting}
+(defun number_multiplication_car (lst n)
+    (mapcar #'(lambda (el) (* el n)) lst)
+)
+
+(number_multiplication_car '(1 2 3 4) '5) ;;; (5 10 15 20)
+
+(defun multiplication_car (lst n)
+    (mapcar #'(lambda (el) (if (numberp el) (* el n) el)) lst)
+)
+
+(multiplication_car '(1 2 3 4) '5) ;;; (5 10 15 20)
+(multiplication_car '(a 2 b 4) '5) ;;; (A 10 B 20)
+\end{lstlisting}
+
+\section{ЗАДАНИЕ 6}
+
+Напишите функцию, select-between, которая из списка-аргумента, содержащего
+только числа, выбирает только те, которые расположены между двумя указанными
+границами-аргументами и возращает их в виде списка (упорядоченного по
+возрастанию списка чисел).
+
+\begin{lstlisting}
+(defun select_between (a b lst)
+    (sort (reduce #'
+        (lambda (lst el)
+            (append
+                (if (numberp lst)
+                    (if (and (<= a lst) (>= b lst))
+                        (list lst)
+                    )
+                    lst
+                )
+                (if (and (<= a el) (>= b el))
+                    (list el)
+                )
+            )
+        ) lst
+    ) #'<)
+)
+
+(select_between '1 '10 '(40 5 2 -6 3 1 8)) ;;; (1 2 3 5 8)
+(select_between '-10 '5 '(-6 -2 -11 8 0 1 -10 -7 100 20 -4))
+;;; (-10 -7 -6 -4 -2 0 1)
+\end{lstlisting}

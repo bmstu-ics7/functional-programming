@@ -1,0 +1,191 @@
+\section{ЗАДАНИЕ 1}
+
+Чем принципиально отличаются функции cons, lisp, append?
+
+\begin{lstlisting}
+(setf lst1 '(a b))
+(setf lst2 '(c d))
+
+(cons lst1 lst2)   ;;; ((A B) C D)
+(list lst1 lst2)   ;;; ((A B) (C D))
+(append lst1 lst2) ;;; (A B C D)
+\end{lstlisting}
+
+Функция cons создает списковую ячейку и кладет в голову первый аргумент, а в хвост --
+второй. Функция list создает списковые ячейки для каждого аргумента и соединяет
+их в один список. А функция append объединяет два списка в один, состоящий из
+элементов двух списков.
+
+\section{ЗАДАНИЕ 2}
+
+Каковы результаты вычисления следующих выражений?
+
+\begin{lstlisting}
+(reverse ())         ;;; Nil
+(last ())            ;;; Nil
+(reverse '(a))       ;;; (A)
+(last '(a))          ;;; (A)
+(reverse '((a b c))) ;;; ((A B C))
+(last '((a b c)))    ;;; ((A B C))
+\end{lstlisting}
+
+\section{ЗАДАНИЕ 3}
+
+Написать два варианта функции, которая возвращает последний элемент своего
+списка-аргумента.
+
+\begin{lstlisting}
+(defun last_red (lst)
+    (if (null lst)
+        Nil
+        (reduce #'(lambda (_ el) el) lst)
+    )
+)
+
+(last_red ()) ;;; Nil
+(last_red '(1 2 3 4 5)) ;;; 5
+
+(defun last_rec (lst)
+    (cond
+        ((null lst) Nil)
+        ((eql (length lst) 1) (car lst))
+        (T (last_rec (cdr lst)))
+    )
+)
+
+(last_rec ()) ;;; Nil
+(last_rec '(1 2 3 4 5)) ;;; 5
+\end{lstlisting}
+
+\section{ЗАДАНИЕ 4}
+
+Написать два варианта функции, которая возвращает свой список-аргумент без
+последнего элемента.
+
+\begin{lstlisting}
+(defun list_without_last_map (lst)
+    (mapcar #'(lambda (el _) el) lst (cdr lst))
+)
+
+(list_without_last_map ()) ;;; Nil
+(list_without_last_map '(1 2 3 4 5)) ;;; (1 2 3 4)
+
+(defun list_without_last_rec (lst)
+    (cond
+        ((null lst) Nil)
+        ((eql (length lst) 1) Nil)
+        (T (cons (car lst) (list_without_last_rec (cdr lst))))
+    )
+)
+
+(list_without_last_rec ()) ;;; Nil
+(list_without_last_rec '(1 2 3 4 5)) ;;; (1 2 3 4)
+\end{lstlisting}
+
+\section{ЗАДАНИЕ 5}
+
+Написать простой вариант игры в кости, в котором бросаются две правильные
+кости. Если сумма выпавших очков равна 7 или 11 -- выигрыш, если выпало
+(1, 1) или (6, 6) -- игрок получает право снова бросить кости, во всех остальных
+случаях ход переходит ко второму игроку, но запоминается сумма выпавших
+очков. Если второй игрок не выигрывает абсолютно, то выигрывает тот игрок,
+у которого больше очков. Результат игры и значения выпавших костей выводить
+на экран с помощью функции print.
+
+\begin{lstlisting}
+(defun roll_the_dice ()
+    (cons
+        (+ (random 6) 1)
+        (+ (random 6) 1)
+    )
+)
+
+(defun turn (n)
+    (let
+        (
+            (roll (roll_the_dice))
+        )
+        (and
+            (if (eql n 1)
+                (print "Игрок 1 бросил:")
+                (print "Игрок 2 бросил:")
+            )
+            (print roll)
+            (if (or
+                    (and (eql (car roll) 1) (eql (cdr roll) 1))
+                    (and (eql (car roll) 6) (eql (cdr roll) 6))
+                )
+                (cons roll (turn n))
+                (list roll)
+            )
+        )
+    )
+)
+
+(defun sum(res)
+    (cond
+        ((null res) 0)
+        (T
+            (let*
+                (
+                    (el1 (caar res))
+                    (el2 (cdar res))
+                    (plus (+ el1 el2))
+                )
+                (if (or (eql plus 7) (eql plus 11))
+                    '100000000
+                    (+ plus (sum (cdr res)))
+                )
+            )
+        )
+    )
+)
+
+(defun main ()
+    (let
+        (
+            (res1 (sum (turn 1)))
+            (res2 (sum (turn 2)))
+        )
+        (cond
+            ((eql res1 res2) (print "Ничья"))
+            ((> res1 res2) (print "Выйграл игрок 1"))
+            (T (print "Выйграл игрок 2"))
+        )
+    )
+)
+
+(main)
+\end{lstlisting}
+
+\begin{lstlisting}
+"Игрок 1 бросил:"
+(1 . 4)
+"Игрок 2 бросил:"
+(1 . 4)
+"Ничья"
+---
+
+"Игрок 1 бросил:"
+(4 . 4)
+"Игрок 2 бросил:"
+(4 . 6)
+"Выйграл игрок 2"
+---
+
+"Игрок 1 бросил:"
+(3 . 2)
+"Игрок 2 бросил:"
+(2 . 2)
+"Выйграл игрок 1"
+---
+
+"Игрок 1 бросил:"
+(1 . 1)
+"Игрок 1 бросил:"
+(4 . 6)
+"Игрок 2 бросил:"
+(2 . 3)
+"Выйграл игрок 1"
+"Выйграл игрок 1"
+\end{lstlisting}
